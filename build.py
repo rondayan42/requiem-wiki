@@ -109,17 +109,27 @@ def write_page(output_path: Path, title: str, body_html: str, *, asset_prefix: s
 def ensure_assets():
     ASSETS_DIR.mkdir(parents=True, exist_ok=True)
     PAGES_DIR.mkdir(parents=True, exist_ok=True)
-    # Copy static files from templates/assets
+    # Copy static files from templates/assets (source of truth)
     src_assets = ROOT / "templates" / "assets"
-    if src_assets.exists():
-        for item in src_assets.iterdir():
-            dst = ASSETS_DIR / item.name
-            if item.is_dir():
-                if dst.exists():
-                    shutil.rmtree(dst)
-                shutil.copytree(item, dst)
-            else:
-                shutil.copy2(item, dst)
+    src_assets.mkdir(parents=True, exist_ok=True)
+
+    # Optional: if user placed header.jpg or favicon.ico at project-level assets/, migrate once into templates/assets
+    fallback_assets = ROOT / "assets"
+    for special in ("header.jpg", "favicon.ico"):
+        src_special = src_assets / special
+        fb_special = fallback_assets / special
+        if (not src_special.exists()) and fb_special.exists():
+            shutil.copy2(fb_special, src_special)
+
+    # Mirror templates/assets -> site/assets
+    for item in src_assets.iterdir():
+        dst = ASSETS_DIR / item.name
+        if item.is_dir():
+            if dst.exists():
+                shutil.rmtree(dst)
+            shutil.copytree(item, dst)
+        else:
+            shutil.copy2(item, dst)
 
 
 def build():
