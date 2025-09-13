@@ -150,6 +150,9 @@ def build():
             soup = BeautifulSoup(html, "html.parser")
             if is_error_page(soup):
                 continue
+            # Skip category namespace here; categories are handled in a separate pass
+            if is_category_page(soup):
+                continue
             article = extract_article(soup)
             if not article:
                 continue
@@ -181,11 +184,12 @@ def build():
                 "content": article["text"],  # type: ignore[index]
             })
 
-            # A-Z listing bucket
+            # A-Z listing bucket (exclude any "Category:" stray titles just in case)
             first = title[0].upper()
             if not first.isalpha():
                 first = "#"
-            a_to_z.setdefault(first, []).append({"title": title, "url": url_rel})
+            if not title.startswith("Category:"):
+                a_to_z.setdefault(first, []).append({"title": title, "url": url_rel})
 
             # Categories: infer from footer catlinks if present in raw html
             for catlink in soup.select("#catlinks a[title^='Category:']"):
@@ -323,12 +327,9 @@ def build():
     # Write individual category pages
     for cat_name in sorted(category_graph.keys(), key=lambda s: s.lower()):
         node = category_graph[cat_name]
-        # Under categories/ (CSS uses ../, article links use ../)
+        # Under categories/ (CSS uses ../, article links use ../). No root duplicates.
         body_cats = render_category_body(cat_name, node, page_link_prefix="../")
         write_page(CATEGORIES_DIR / category_output_filename(cat_name), f"Category: {cat_name}", body_cats, asset_prefix="../")
-        # Root copy (no prefixes)
-        body_root = render_category_body(cat_name, node, page_link_prefix="")
-        write_page(SITE_DIR / category_output_filename(cat_name), f"Category: {cat_name}", body_root, asset_prefix="")
 
     # Determine top-level categories (not a subcategory of any other)
     all_cats = set(category_graph.keys())
@@ -350,8 +351,6 @@ def build():
         node = category_graph.get(cat_name, {"subcats": set(), "pages": set()})
         body_cats = render_category_body(cat_name, node, page_link_prefix="../")
         write_page(CATEGORIES_DIR / category_output_filename(cat_name), f"Category: {cat_name}", body_cats, asset_prefix="../")
-        body_root = render_category_body(cat_name, node, page_link_prefix="")
-        write_page(SITE_DIR / category_output_filename(cat_name), f"Category: {cat_name}", body_root, asset_prefix="")
 
     roots = sorted(list(roots_set), key=lambda s: s.lower())
 
