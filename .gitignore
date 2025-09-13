@@ -36,7 +36,8 @@ fade.gif
 # --- Large archived mirrors (kept locally; not pushed) ---
 requiem-wiki.org/
 dridriou.free.fr/
-
+russian_requiem/
+russian copy requiem/
 # --- Site output ---
 # Keep site/ in the repo so you can publish from main.
 # If you deploy from a separate gh-pages branch, uncomment the next line:

@@ -34,4 +34,19 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font:16px/1.
 
 ::selection{background:rgba(176,19,34,.6);color:#fff}
 
+/* Mobile tweaks only */
+@media (max-width: 768px){
+  .header-inner{flex-direction:column;align-items:stretch;gap:8px}
+  .nav{order:3;margin-left:0;flex-wrap:wrap;gap:8px}
+  .nav a{flex:1 1 auto;text-align:center}
+  .search{order:2;justify-content:stretch}
+  .search input{max-width:none;width:100%}
+  .content{padding:14px}
+  .page-title{font-size:1.5rem}
+  .content table{display:block;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .content th,.content td{white-space:normal;word-break:break-word;overflow-wrap:anywhere}
+  .content img{max-width:100%;height:auto}
+  pre{white-space:pre-wrap}
+}
+
 
