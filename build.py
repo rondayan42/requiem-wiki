@@ -384,6 +384,45 @@ def build():
     write_page(SITE_DIR / "Categories.html", "Categories", "".join(cat_index_parts), asset_prefix="")
 
     # After categories are finalized, add breadcrumbs to article pages
+    # Build case-insensitive title lookup
+    lower_title_to_url: dict[str, str] = {t.lower(): u for t, u in article_title_to_filename.items()}
+
+    def resolve_article_url_by_title_maybe(title_guess: str) -> str | None:
+        if not title_guess:
+            return None
+        # Direct
+        u = article_title_to_filename.get(title_guess)
+        if u:
+            return u
+        # Case-insensitive
+        u = lower_title_to_url.get(title_guess.lower())
+        if u:
+            return u
+        # Underscore/space variant
+        alt = title_guess.replace('_', ' ') if '_' in title_guess else title_guess.replace(' ', '_')
+        u = article_title_to_filename.get(alt) or lower_title_to_url.get(alt.lower())
+        return u
+
+    def rewrite_article_links(body_html: str, asset_prefix: str) -> str:
+        s = BeautifulSoup(body_html, "html.parser")
+        for a in s.find_all('a'):
+            href = a.get('href')
+            if not href:
+                continue
+            if href.startswith('http://') or href.startswith('https://') or href.startswith('mailto:'):
+                continue
+            # category links
+            title_attr = a.get('title') or ''
+            if title_attr.startswith('Category:') or href.startswith('Category_'):
+                cat_name = normalize_category_name(title_attr) if title_attr else normalize_category_name(href.replace('Category_', '').replace('.html', '').replace('_', ' '))
+                a['href'] = f"{asset_prefix}categories/{category_output_filename(cat_name)}"
+                continue
+            # article links
+            guess_title = title_attr if title_attr and not title_attr.startswith('Category:') else href.replace('.html', '').replace('_', ' ')
+            url = resolve_article_url_by_title_maybe(guess_title)
+            if url:
+                a['href'] = f"{asset_prefix}{url}"
+        return str(s)
     for title, filename in article_title_to_filename.items():
         cats = sorted(article_title_to_categories.get(title, []), key=lambda s: s.lower())
         if cats:
@@ -410,7 +449,8 @@ def build():
                     # compute asset prefix for nested pages
                     depth = len(page_path.relative_to(SITE_DIR).parts) - 1
                     asset_prefix = "../" * depth
-                    write_page(page_path, title, article["html"], asset_prefix=asset_prefix, breadcrumbs_html="".join(crumbs))  # type: ignore[arg-type]
+                    body = rewrite_article_links(article["html"], asset_prefix)  # type: ignore[index]
+                    write_page(page_path, title, body, asset_prefix=asset_prefix, breadcrumbs_html="".join(crumbs))
 
     # Home page (for site/)
     home_html = """
