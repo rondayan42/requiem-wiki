@@ -62,22 +62,27 @@
     return q.trim().toLowerCase().split(/\s+/).filter(Boolean);
   }
 
-  function scoreDoc(doc, tokens){
+  function scoreDoc(doc, tokens, rawQuery){
     let score = 0;
     const title = doc.title.toLowerCase();
     const content = doc.content.toLowerCase();
+    const phrase = rawQuery.trim().toLowerCase();
+    // Strong boosts for exact title and exact phrase
+    if(title === phrase) score += 1000;
+    if(title.includes(phrase)) score += 200;
+    if(content.includes(phrase)) score += 50;
     for(const t of tokens){
-      if(title === t) score += 10;
-      if(title.includes(t)) score += 6;
+      if(title === t) score += 20;
+      if(title.includes(t)) score += 8;
       if(content.includes(t)) score += 1;
     }
     return score;
   }
 
-  function fuzzyCandidates(tokens){
-    const key = tokens.join(' ');
+  function fuzzyCandidates(tokens, rawQuery){
+    const key = tokens.join(' ') + '|' + rawQuery.toLowerCase();
     if(cacheByWord.has(key)) return cacheByWord.get(key);
-    const res = index.map(doc=>({score:scoreDoc(doc, tokens), doc}))
+    const res = index.map(doc=>({score:scoreDoc(doc, tokens, rawQuery), doc}))
       .filter(x=>x.score>0)
       .sort((a,b)=> b.score - a.score || a.doc.title.localeCompare(b.doc.title))
       .map(x=>x.doc);
@@ -89,7 +94,7 @@
     const q = query.trim().toLowerCase();
     if(!q) return [];
     const tokens = tokenize(q);
-    return fuzzyCandidates(tokens);
+    return fuzzyCandidates(tokens, query);
   }
 
   input.addEventListener('input', async (e)=>{
