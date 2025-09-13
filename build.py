@@ -16,6 +16,7 @@ SRC_DIRS = [
 SITE_DIR = ROOT / "site"
 ASSETS_DIR = SITE_DIR / "assets"
 CATEGORIES_DIR = SITE_DIR / "categories"
+PAGES_DIR = SITE_DIR / "pages"
 
 
 ERROR_TITLE_PATTERNS = [
@@ -107,6 +108,7 @@ def write_page(output_path: Path, title: str, body_html: str, *, asset_prefix: s
 
 def ensure_assets():
     ASSETS_DIR.mkdir(parents=True, exist_ok=True)
+    PAGES_DIR.mkdir(parents=True, exist_ok=True)
     # Copy static files from templates/assets
     src_assets = ROOT / "templates" / "assets"
     if src_assets.exists():
@@ -157,15 +159,25 @@ def build():
 
             seen_titles.add(title)
             safe_name = to_safe_name(title)
-            out_path = SITE_DIR / f"{safe_name}.html"
+            # bucket by first char to avoid >1000 files per folder
+            first_char = safe_name[0].upper() if safe_name else "#"
+            if not ("A" <= first_char <= "Z"):
+                first_char = "0-9"
+            out_dir = PAGES_DIR / first_char
+            out_dir.mkdir(parents=True, exist_ok=True)
+            out_path = out_dir / f"{safe_name}.html"
             # breadcrumbs fill later once categories are known
-            write_page(out_path, title, article["html"], asset_prefix="")  # type: ignore[arg-type]
-            article_title_to_filename[title] = out_path.name
+            # compute asset prefix based on depth relative to SITE_DIR
+            depth = len(out_path.relative_to(SITE_DIR).parts) - 1  # minus filename
+            asset_prefix = "../" * depth
+            write_page(out_path, title, article["html"], asset_prefix=asset_prefix)  # type: ignore[arg-type]
+            url_rel = out_path.relative_to(SITE_DIR).as_posix()
+            article_title_to_filename[title] = url_rel
 
             # Build search index entry
             search_index.append({
                 "title": title,
-                "url": out_path.name,
+                "url": url_rel,
                 "content": article["text"],  # type: ignore[index]
             })
 
@@ -173,12 +185,12 @@ def build():
             first = title[0].upper()
             if not first.isalpha():
                 first = "#"
-            a_to_z.setdefault(first, []).append({"title": title, "url": out_path.name})
+            a_to_z.setdefault(first, []).append({"title": title, "url": url_rel})
 
             # Categories: infer from footer catlinks if present in raw html
             for catlink in soup.select("#catlinks a[title^='Category:']"):
                 cat = normalize_category_name(catlink.get("title", catlink.get_text(strip=True)))
-                categories.setdefault(cat, []).append({"title": title, "url": out_path.name})
+                categories.setdefault(cat, []).append({"title": title, "url": url_rel})
                 article_title_to_categories.setdefault(title, set()).add(cat)
 
     # Pass 2: Parse category pages to build hierarchy (subcategories + pages)
@@ -383,7 +395,7 @@ def build():
             crumbs.append(" <span class=\"sep\">|</span> ".join(parts))
             crumbs.append("</div>")
             # Re-read the body that was written earlier and rewrite page with breadcrumbs
-            page_path = SITE_DIR / filename
+            page_path = SITE_DIR / Path(filename)
             # Retrieve original body by re-parsing the built page body section would be complex; instead, reconstruct from source again
             # Find original source soup by searching both src dirs
             source_html = None
@@ -396,9 +408,12 @@ def build():
                 soup = BeautifulSoup(source_html, "html.parser")
                 article = extract_article(soup)
                 if article:
-                    write_page(page_path, title, article["html"], asset_prefix="", breadcrumbs_html="".join(crumbs))  # type: ignore[arg-type]
+                    # compute asset prefix for nested pages
+                    depth = len(page_path.relative_to(SITE_DIR).parts) - 1
+                    asset_prefix = "../" * depth
+                    write_page(page_path, title, article["html"], asset_prefix=asset_prefix, breadcrumbs_html="".join(crumbs))  # type: ignore[arg-type]
 
-    # Home page
+    # Home page (for site/)
     home_html = """
     <div class="home">
       <p>Rebuilt static archive of the 2009 Requiem Wiki. Use the search box above, or browse:</p>
@@ -409,6 +424,18 @@ def build():
     </div>
     """
     write_page(SITE_DIR / "index.html", "Requiem Wiki (2009 Archive)", home_html, asset_prefix="")
+
+    # Root-level index that points into site/ for GitHub Pages root deployment
+    home_html_root = """
+    <div class=\"home\">
+      <p>Rebuilt static archive of the 2009 Requiem Wiki. Use the search box above, or browse:</p>
+      <ul>
+        <li><a href=\"site/A-Z.html\">A–Z Index</a></li>
+        <li><a href=\"site/Categories.html\">Categories</a></li>
+      </ul>
+    </div>
+    """
+    write_page(ROOT / "index.html", "Requiem Wiki (2009 Archive)", home_html_root, asset_prefix="site/")
 
 
 if __name__ == "__main__":

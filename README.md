@@ -3,7 +3,7 @@
 A static, searchable rebuild of the 2009 community wiki for Requiem: Bloodymare / Desiderium Mortis.
 
 - Input: archived HTML mirrors in `requiem-wiki.org/` and `dridriou.free.fr/`.
-- Output: modern static site in `site/` with new CSS, header, and client‑side search.
+- Output: modern static site in `site/` with new CSS, header, and client‑side search. Articles are sharded under `site/pages/` (e.g. `site/pages/A/...`, `site/pages/0-9/...`) so no folder exceeds GitHub’s 1000-file listing limit.
 - Dead/archival error pages are skipped automatically.
 - Categories are rebuilt from the original pages and enhanced with a curated taxonomy (Equipment, Weapons, Classes, Skills, Quests, Monsters, Character, World, Downloads, Consumables, Guides). Breadcrumbs show an article’s categories.
 
@@ -23,7 +23,8 @@ python build.py
 
 3) Open the site:
 
-- Double‑click `site/index.html` (file://). Search works offline via `site/search-index.js`.
+- Double‑click `index.html` at the repo root (links into `site/`).
+- Or open `site/index.html` directly (file://). Search works offline via `site/search-index.js`.
 - Or serve locally:
 
 ```bash
@@ -34,8 +35,16 @@ python -m http.server 9000 -d site
 ## Project layout
 
 ```
+index.html              # Root entry that links into site/
 build.py                # Builder: parses archive, skips dead pages, writes site/
 site/                   # Generated static website (commit/publish this)
+  A-Z.html              # A–Z index
+  Categories.html       # Category tree (featured + legacy)
+  assets/               # CSS/JS, including search-index.{json,js}
+  pages/                # Sharded article pages
+    A/                  # Titles starting with A
+    B/                  # ...
+    0-9/                # Non-letters
 templates/              # HTML/CSS/JS used by the builder
   page.html             # Base page template
   assets/style.css      # Dark theme styling
@@ -68,11 +77,15 @@ Run `python build.py` again after changes.
 
 ## Deploying to GitHub Pages
 
-Option A – `gh-pages` branch (recommended)
+Option A – root of `main` (simple)
+- Keep `index.html` at the repo root and the generated site under `site/`.
+- In Settings → Pages, choose “Deploy from a branch”, branch `main`, folder `/`.
+
+Option B – `gh-pages` branch
 - Create a branch `gh-pages` whose root contains the contents of `site/`.
 - In repository Settings → Pages, choose “Deploy from a branch”, branch `gh-pages`, folder `/`.
 
-Option B – `docs/` folder
+Option C – `docs/` folder
 - Copy the contents of `site/` into a `docs/` folder.
 - In Settings → Pages, choose “Deploy from a branch”, branch `main`, folder `/docs`.
 
