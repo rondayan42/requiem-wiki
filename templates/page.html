@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{TITLE}}</title>
+  <link rel="stylesheet" href="{{ASSET_PREFIX}}assets/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="{{ASSET_PREFIX}}index.html">Requiem Wiki (2009 Archive)</a>
+      <nav class="nav">
+        <a href="{{ASSET_PREFIX}}A-Z.html">A–Z</a>
+        <a href="{{ASSET_PREFIX}}Categories.html">Categories</a>
+        <a href="{{ASSET_PREFIX}}index.html">Home</a>
+      </nav>
+      <form id="search-form" class="search" action="index.html">
+        <input id="search-input" type="search" name="q" placeholder="Search articles…" autocomplete="off">
+      </form>
+    </div>
+    <div id="search-results" class="search-results container" aria-live="polite"></div>
+  </header>
+
+  <main class="container">
+    {{BREADCRUMBS}}
+    <h1 class="page-title">{{TITLE}}</h1>
+    <article class="content">
+      {{BODY}}
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>Static rebuild of the 2009 Requiem Wiki. Some links or images may be missing due to archival gaps.</p>
+    </div>
+  </footer>
+
+  <script>window.ASSET_PREFIX = "{{ASSET_PREFIX}}";</script>
+  <script src="{{ASSET_PREFIX}}assets/search.js"></script>
+</body>
+</html>
+
+

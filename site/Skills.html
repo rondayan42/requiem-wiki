@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Skills</title>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html">Requiem Wiki (2009 Archive)</a>
+      <nav class="nav">
+        <a href="A-Z.html">A–Z</a>
+        <a href="Categories.html">Categories</a>
+        <a href="index.html">Home</a>
+      </nav>
+      <form id="search-form" class="search" action="index.html">
+        <input id="search-input" type="search" name="q" placeholder="Search articles…" autocomplete="off">
+      </form>
+    </div>
+    <div id="search-results" class="search-results container" aria-live="polite"></div>
+  </header>
+
+  <main class="container">
+    <div class="breadcrumbs">Categories:<a href="categories/Category_Skills.html">Skills</a></div>
+    <h1 class="page-title">Skills</h1>
+    <article class="content">
+      <div id="bodyContent">
+<h3 id="siteSub">From Requiem Wiki</h3>
+<div id="contentSub"></div>
+ <!-- start content -->
+<script type="text/javascript"> if (window.showTocToggle) { var tocShowText = "show"; var tocHideText = "hide"; showTocToggle(); } </script>
+<a name="Skill_Queue"></a><h2> <span class="mw-headline"> Skill Queue </span></h2>
+<p>A player may queue up to 3 seperate skills for activation. The same skill cannot be entered into the queue more than once. Only skills which are not locked out from "skill downtime" can be queued. Once a skill has been queued, it's order in the queue cannot be changed. 
+</p><p>Skills in the queue are represented by a flashing icon. To queue a skill for activation, simply press it's skill icon or the shortcut key you assign it to (by clicking and dragging the skill's icon from the skill panel into the quick slot bar at the bottom of the UI.)
+</p>
+<a name="Skill_Use_Phases"></a><h2> <span class="mw-headline"> Skill Use Phases </span></h2>
+<p>Skill use is divided into the following phases:
+</p>
+<a name="Skill_Activated"></a><h3> <span class="mw-headline"> Skill Activated </span></h3>
+<p>Skill activation occurs when a skill in the queue reaches the top of the skill queue. The unmodified MP consumption and other costs are checked (but not yet subtracted) to see if the character meets the costs of the skill. This initial cost check does not take into account the effects of DNA or any other cost reduction modifiers. If the character cannot meet these costs the skill will not take effect.
+</p><p>All melee skills and some ranged and magic skills will also check for line of sight in this step. A failed line of sight check means the skill will not take effect.
+</p>
+<a name="Casting_Time"></a><h3> <span class="mw-headline"> Casting Time </span></h3>
+<p>Casting Time is represented by the player's HP bar changing from the character's name to the name of the skill. A golden line will flow from left to right on the bar and when the line reaches the end, the casting time is completed. An instant cast skill will not show this effect.
+</p><p>During casting time the character cannot attack or use other skills. Character movement during the casting time results in the cancelation of the skill (although a character can turn while casting.) Instant cast skills are not affected by movement; (can be cast while your character is moving.)
+</p>
+<a name="Autoattack_Synchronization"></a><h3> <span class="mw-headline"> Autoattack Synchronization </span></h3>
+<p>This phase only applies to melee or ranged weapon skills. The next skill phase is delayed until the the next time the character would perform an autoattack. The skill then takes the place of the autoattack in the next phase.
+</p>
+<a name="Skill_Effects_Applied"></a><h3> <span class="mw-headline"> Skill Effects Applied </span></h3>
+<p>Any skill that makes line of sight checks will again check for line of sight in this phase. A failed line of sight check means the skill will not take effect.
+</p><p>The skill MP consumption and other costs are reduced by any cost reducing effects, such as DNA, and the final cost is paid. The skill effects then take place.
+</p>
+<a name="Animation_Delay"></a><h3> <span class="mw-headline"> Animation Delay </span></h3>
+<p>Some skills have an animation that continues after the skill's effects have already been applied. During this time, no other skills can be activated and the character cannot attack.
+</p>
+<a name="Skill_Downtime"></a><h3> <span class="mw-headline"> Skill Downtime </span></h3>
+<p>The skill is locked out from use for a duration equal to it's skill downtime. This is represented by the icon being greyed out and the time until the skill is ready for use being displayed on the skill icon.
+</p>
+<!-- 
+NewPP limit report
+Preprocessor node count: 9/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+<!-- Saved in parser cache with key reqwiki:pcache:idhash:701-0!1!0!!en!2!edit=0 and timestamp 20090427143738 -->
+
+ <!-- end content -->
+<div class="visualClear"></div>
+</div>
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>Static rebuild of the 2009 Requiem Wiki. Some links or images may be missing due to archival gaps.</p>
+    </div>
+  </footer>
+
+  <script>window.ASSET_PREFIX = "";</script>
+  <script src="assets/search.js"></script>
+</body>
+</html>
+
+

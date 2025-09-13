@@ -1,0 +1,32 @@
+:root{
+  --bg:#0b0d10; --panel:#12161b; --text:#e6edf3; --muted:#9fb3c8; --link:#6cb6ff; --accent:#7ee787; --border:#2a2f37;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif}
+.container{max-width:1100px;margin:0 auto;padding:0 16px}
+.site-header{position:sticky;top:0;background:linear-gradient(180deg,#0b0d10, #0b0d10f0);backdrop-filter: blur(6px);border-bottom:1px solid var(--border);z-index:10}
+.header-inner{display:flex;gap:16px;align-items:center;padding:10px 0;flex-wrap:wrap}
+.brand{color:var(--text);text-decoration:none;font-weight:700}
+.nav{display:flex;gap:12px;margin-left:auto}
+.nav a{color:var(--muted);text-decoration:none;border:1px solid var(--border);padding:6px 10px;border-radius:8px}
+.nav a:hover{border-color:var(--link);color:var(--text)}
+.search{flex:1;display:flex;justify-content:flex-end}
+.search input{width:100%;max-width:320px;background:var(--panel);border:1px solid var(--border);color:var(--text);padding:8px 10px;border-radius:8px}
+.search-results{display:none;background:var(--panel);border:1px solid var(--border);border-radius:10px;margin:8px 0;padding:8px}
+.search-results.active{display:block}
+.search-results ul{list-style:none;margin:0;padding:0}
+.search-results li{padding:6px 4px;border-bottom:1px dashed var(--border)}
+.search-results li:last-child{border-bottom:0}
+.search-results a{color:var(--link);text-decoration:none}
+.page-title{margin:22px 0}
+.breadcrumbs{color:var(--muted);font-size:14px;margin-top:14px}
+.breadcrumbs a{color:var(--link);text-decoration:none}
+.breadcrumbs .sep{margin:0 6px;color:var(--border)}
+.content{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:18px}
+.content a{color:var(--link)}
+.content table{width:100%;border-collapse:collapse}
+.content th,.content td{border:1px solid var(--border);padding:6px}
+.content h2,.content h3{border-bottom:1px solid var(--border);padding-bottom:4px}
+.site-footer{margin:40px 0 0;border-top:1px solid var(--border);padding:16px 0;color:var(--muted)}
+
+

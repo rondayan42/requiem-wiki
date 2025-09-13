@@ -1,0 +1,45 @@
+# --- OS / Editor ---
+.DS_Store
+Thumbs.db
+desktop.ini
+ehthumbs.db
+$RECYCLE.BIN/
+*.lnk
+.idea/
+.vscode/
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+.venv/
+venv/
+env/
+pip-wheel-metadata/
+
+# --- Build / Caches / Logs ---
+.cache/
+dist/
+build/
+*.log
+*.tmp
+*.temp
+
+# --- HTTrack artifacts ---
+hts-cache/
+hts-log.txt
+backblue.gif
+fade.gif
+
+# --- Large archived mirrors (kept locally; not pushed) ---
+requiem-wiki.org/
+dridriou.free.fr/
+
+# --- Site output ---
+# Keep site/ in the repo so you can publish from main.
+# If you deploy from a separate gh-pages branch, uncomment the next line:
+# site/
+
+
